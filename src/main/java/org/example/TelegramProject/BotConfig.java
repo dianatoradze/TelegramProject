@@ -1,7 +1,10 @@
 package org.example.TelegramProject;
 
+import api.TelegramFacade;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
@@ -19,13 +22,14 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 @Configuration
 @ConfigurationProperties(prefix = "telegrambot")
 public class BotConfig {
+
     private String botToken;
     private String botUserName;
 
     @Bean
-    public Bot MyTelegramBot() {
+    public Bot MyTelegramBot(TelegramFacade telegramFacade)  {
 
-        Bot bot = new Bot();
+        Bot bot = new Bot(telegramFacade);
 
         bot.setBotUserName(botUserName);
         bot.setBotToken(botToken);
@@ -34,11 +38,13 @@ public class BotConfig {
     }
     @Bean
     public MessageSource messageSource() {
-        ReloadableResourceBundleMessageSource messageSource =
-                new ReloadableResourceBundleMessageSource();
-        messageSource.setBasename("classpath:messages");
-        messageSource.setDefaultEncoding("UTF-8");
-        return messageSource;
+
+            ReloadableResourceBundleMessageSource messageSource =
+                    new ReloadableResourceBundleMessageSource();
+            messageSource.setBasename("classpath:messages");
+            messageSource.setDefaultEncoding("UTF-8");
+            return messageSource;
+
     }
 
 

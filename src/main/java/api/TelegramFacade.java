@@ -2,14 +2,17 @@ package api;
 
 import cashe.UserDataCache;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-    @Component
+@Component
     @Slf4j //для тестирования
     public class TelegramFacade {
+
         private BotStateContext botStateContext;
         private UserDataCache userDataCache;
 
@@ -18,20 +21,25 @@ import org.telegram.telegrambots.meta.api.objects.Update;
             this.userDataCache = userDataCache;
         }
 
-        public SendMessage handleUpdate(Update update) {
+        public SendMessage handleUpdate(Update update) throws TelegramApiException {
             SendMessage replyMessage = null;
+            try {
+                Message message = update.getMessage();
+                if (message != null && message.hasText()) {
+                    //поменять
+                    log.info("New message from User:{}, chatId: {},  with text: {}",
+                            message.getFrom().getUserName(), message.getChatId(), message.getText());
+                    replyMessage = handleInputMessage(message);
+                }
 
-            Message message = update.getMessage();
-            if (message != null && message.hasText()) {
-                log.info("New message from User:{}, chatId: {},  with text: {}",
-                        message.getFrom().getUserName(), message.getChatId(), message.getText());
-                replyMessage = handleInputMessage(message);
-            }
-
+            } catch (TelegramApiException e) {
+        e.printStackTrace();
+    }
             return replyMessage;
         }
 
-        private SendMessage handleInputMessage(Message message) {
+        private SendMessage handleInputMessage(Message message) throws TelegramApiException {
+
             String inputMsg = message.getText();
             int userId = message.getFrom().getId();
             BotState botState;
