@@ -38,15 +38,6 @@ public class Bot extends TelegramLongPollingBot {
         return botToken;
     }
 
-
-    private String input(String text) {
-        if (text.contains("Hi") || text.contains("Hello") || text.contains("Привет")) {
-            return "Привет, друг";
-        }
-
-        return text;
-    }
-
     public void setBotToken(String botToken) {
         this.botToken = botToken;
     }
