@@ -1,13 +1,14 @@
-package api.handlers;
+package org.example.TelegramProject.api.handlers;
 
-import api.BotState;
-import api.InputMessageHandler;
-import cashe.UserDataCache;
+import lombok.NonNull;
+import org.example.TelegramProject.api.BotState;
+import org.example.TelegramProject.api.InputMessageHandler;
+import org.example.TelegramProject.cashe.UserDataCache;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import service.ReplyMessagesService;
+import org.example.TelegramProject.service.ReplyMessagesService;
 
 //Спрашивает пользователя- хочет ли он получить предложение о поиске аренды
 @Slf4j
@@ -30,15 +31,15 @@ public class AskSumHandler implements InputMessageHandler {
 
     @Override
     public BotState getHandlerName() {
-        return BotState.ASK_SUM;
+        return BotState.APART_SEARCH;
     }
 
     private SendMessage processUsersInput(Message inputMsg) {
-        int userId = inputMsg.getFrom().getId();
+        @NonNull Long userId = inputMsg.getFrom().getId();
         long chatId = inputMsg.getChatId();
 
-        SendMessage replyToUser = messagesService.getReplyMessage(chatId, "reply.askSum");
-        userDataCache.setUsersCurrentBotState(userId, BotState.USER_PROFILE);
+        SendMessage replyToUser = messagesService.getReplyMessage(String.valueOf(chatId), "reply.askApart");
+        userDataCache.setUsersCurrentBotState(userId, BotState.APART_SEARCH); //user_profile
 
         return replyToUser;
     }

@@ -1,6 +1,6 @@
-package api;
+package org.example.TelegramProject.api;
 
-import cashe.UserDataCache;
+import org.example.TelegramProject.cashe.UserDataCache;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -33,13 +33,13 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
         private SendMessage handleInputMessage(Message message) {
             String inputMsg = message.getText();
-            int userId = message.getFrom().getId();
+            @lombok.NonNull Long userId = message.getFrom().getId();
             BotState botState;
             SendMessage replyMessage;
 
             switch (inputMsg) {
                 case "/start":
-                    botState = BotState.ASK_SUM;
+                    botState = BotState.APART_SEARCH;
                     break;
                 case "Получить предложение о поиске":
                     botState = BotState.USER_PROFILE;

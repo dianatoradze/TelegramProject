@@ -1,4 +1,4 @@
-package api;
+package org.example.TelegramProject.api;
 
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.springframework.stereotype.Component;
@@ -26,7 +26,7 @@ public class BotStateContext {
 
         private InputMessageHandler findMessageHandler(BotState currentState) {
             if (isFillingProfileState(currentState)) {
-                return messageHandlers.get(BotState.USER_PROFILE);
+                return messageHandlers.get(BotState.APART_SEARCH);//user_profile
             }
 
             return messageHandlers.get(currentState);
@@ -34,7 +34,16 @@ public class BotStateContext {
 
         private boolean isFillingProfileState(BotState currentState) {
             switch (currentState) {
-                case ASK_SUM:
+                case APART_SEARCH:
+                case ASK_SUM_BEGIN:
+                case ASK_SUM_FINISH:
+                case ASK_DATE_BEGIN:
+
+                case ASK_DATE_FINISH:
+
+                case APART_SEARCH_STARTED:
+                case APART_INFO_RESPONCE_AWAITING:
+                case APART_SEARCH_FINISH:
 
                 case USER_PROFILE:
                 case PROFILE_FILLED:

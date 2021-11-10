@@ -1,4 +1,4 @@
-package service;
+package org.example.TelegramProject.service;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;

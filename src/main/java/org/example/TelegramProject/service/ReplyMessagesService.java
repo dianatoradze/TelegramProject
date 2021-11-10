@@ -1,4 +1,4 @@
-package service;
+package org.example.TelegramProject.service;
 
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -14,11 +14,11 @@ public class ReplyMessagesService {
         this.localeMessageService = messageService;
     }
 
-    public SendMessage getReplyMessage(long chatId, String replyMessage) {
+    public SendMessage getReplyMessage(String chatId, String replyMessage) {
         return new SendMessage(chatId, localeMessageService.getMessage(replyMessage));
     }
 
-    public SendMessage getReplyMessage(long chatId, String replyMessage, Object... args) {
+    public SendMessage getReplyMessage(String chatId, String replyMessage, Object... args) {
         return new SendMessage(chatId, localeMessageService.getMessage(replyMessage, args));
     }
 
