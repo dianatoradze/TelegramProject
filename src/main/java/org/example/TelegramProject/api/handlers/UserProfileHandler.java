@@ -7,6 +7,8 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.example.TelegramProject.service.ReplyMessagesService;
 
+import java.util.Date;
+
 // Кэш в памяти usersBotStates: user_id и состояние бота пользователя
 // usersProfileData: user_id и данные профиля пользователя
 
@@ -35,7 +37,7 @@ public class UserProfileHandler implements InputMessageHandler {
     }
 
     private SendMessage processUsersInput(Message inputMsg) {
-        String usersAnswer = inputMsg.getText();
+        int usersAnswer = Integer.parseInt(inputMsg.getText());
         @lombok.NonNull Long userId = inputMsg.getFrom().getId();
         long chatId = inputMsg.getChatId();
 
@@ -49,27 +51,30 @@ public class UserProfileHandler implements InputMessageHandler {
             userDataCache.setUsersCurrentBotState(userId, BotState.ASK_SUM_BEGIN); // следующее состояние
         }
         if (botState.equals(BotState.ASK_SUM_BEGIN)) {
-            profileData.getSumBegin();
+            profileData.setSumBegin(usersAnswer);
                     replyToUser = messagesService.getReplyMessage(String.valueOf(chatId), "reply.askSumBegin");
 
             userDataCache.setUsersCurrentBotState(userId, BotState.ASK_SUM_FINISH);
             // replyToUser = new SendMessage(chatId, String.format("%s %s", "Начальная сумма поиска", apartData));
         }
         if (botState.equals(BotState.ASK_SUM_FINISH)) {
+            profileData.setSumFinish(usersAnswer);
             replyToUser = messagesService.getReplyMessage(String.valueOf(chatId), "reply.askSumFinish");
             userDataCache.setUsersCurrentBotState(userId, BotState.ASK_DATE_BEGIN);
         }
         if (botState.equals(BotState.ASK_DATE_BEGIN)) {
+            //profileData.setDateBegin(usersAnswer);
             replyToUser = messagesService.getReplyMessage(String.valueOf(chatId), "reply.askDataBegin");
             userDataCache.setUsersCurrentBotState(userId, BotState.DATE_FINISH_RECEIVED);
         }
         if (botState.equals(BotState.DATE_FINISH_RECEIVED)) {
+            //profileData.setDateFinishReceived(usersAnswer);
             replyToUser = messagesService.getReplyMessage(String.valueOf(chatId), "reply.askDataFinish");
-            userDataCache.setUsersCurrentBotState(userId, BotState.SHOW_MAIN_MENU);
+            userDataCache.setUsersCurrentBotState(userId, BotState.SHOW_MAIN_MENU);//profile_field
         }
         if (botState.equals(BotState.SHOW_MAIN_MENU)) {
             replyToUser = messagesService.getReplyMessage(String.valueOf(chatId), "reply.showMainMenu");
-            userDataCache.setUsersCurrentBotState(userId, BotState.ASK_SUM_BEGIN); // следующее состояние
+            userDataCache.setUsersCurrentBotState(userId, BotState.APART_SEARCH); // следующее состояние
         }
 
 

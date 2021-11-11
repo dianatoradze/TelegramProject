@@ -39,7 +39,7 @@ public class AskSumHandler implements InputMessageHandler {
         long chatId = inputMsg.getChatId();
 
         SendMessage replyToUser = messagesService.getReplyMessage(String.valueOf(chatId), "reply.askApart");
-        userDataCache.setUsersCurrentBotState(userId, BotState.APART_SEARCH); //user_profile
+        userDataCache.setUsersCurrentBotState(userId, BotState.USER_PROFILE); //filling_profile
 
         return replyToUser;
     }

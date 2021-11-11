@@ -6,7 +6,7 @@ import lombok.experimental.FieldDefaults;
 
 import java.util.Date;
 
-//Данные анкеты пользователя
+//Данные  пользователя
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -15,6 +15,7 @@ public class UserProfileData {
     String apartTwoRoom;
     int sumBegin;
     int sumFinish;
+    Date dateBegin;
     Date dateFinishReceived;
     }
 

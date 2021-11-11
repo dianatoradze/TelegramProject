@@ -53,7 +53,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
             }
 
             userDataCache.setUsersCurrentBotState(userId, botState);
-
+            // обработать входящение сообщение из контекста
             replyMessage = botStateContext.processInputMessage(botState, message);
 
             return replyMessage;

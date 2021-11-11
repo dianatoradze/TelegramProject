@@ -26,7 +26,7 @@ public class BotStateContext {
 
         private InputMessageHandler findMessageHandler(BotState currentState) {
             if (isFillingProfileState(currentState)) {
-                return messageHandlers.get(BotState.APART_SEARCH);//user_profile
+                return messageHandlers.get(BotState.USER_PROFILE);//filling_profile
             }
 
             return messageHandlers.get(currentState);

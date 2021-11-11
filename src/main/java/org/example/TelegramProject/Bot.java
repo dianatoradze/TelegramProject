@@ -3,23 +3,20 @@ package org.example.TelegramProject;
 import lombok.extern.slf4j.Slf4j;
 import org.example.TelegramProject.api.TelegramFacade;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
-import org.telegram.telegrambots.meta.TelegramBotsApi;
+import org.telegram.telegrambots.bots.TelegramWebhookBot;
+import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
-
-import javax.annotation.PostConstruct;
 
 @Slf4j
-public class Bot extends TelegramLongPollingBot {
+public class Bot extends TelegramWebhookBot {
 
     private String botToken="2023748691:AAGVNOSX5YBmVK0ojy26pkBGLGoYlz7o1l8";
     private String botUserName="@testerforhelp_bot";
-    private String webHookPath;
+    private String webHookPath="https://21b0-2a00-1fa2-279-4176-b153-358a-e9ab-8a37.ngrok.io";
     private final TelegramFacade telegramFacade;
 
-    public Bot(String botUserName, String botUserNamem,TelegramFacade telegramFacade) {
+    public Bot(TelegramFacade telegramFacade) {
 
         this.telegramFacade = telegramFacade;
     }
@@ -50,13 +47,15 @@ public class Bot extends TelegramLongPollingBot {
     }
 
     @Override
-    public void onUpdateReceived(Update update) {
-        log.info("TelegramBot onUpdateReceived {}", update);
+    public BotApiMethod<?> onWebhookUpdateReceived(Update update) {
+        log.info("TelegramBot onWebhookUpdateReceived {}", update);
         SendMessage replyMessageToUser = telegramFacade.handleUpdate(update);
 
+        return replyMessageToUser;
     }
 
-
-
-
+    @Override
+    public String getBotPath() {
+        return webHookPath;
+    }
 }
