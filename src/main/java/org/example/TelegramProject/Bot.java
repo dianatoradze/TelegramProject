@@ -1,15 +1,21 @@
 package org.example.TelegramProject;
 
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.example.TelegramProject.api.TelegramFacade;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
-import org.telegram.telegrambots.bots.TelegramWebhookBot;
+
+import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+@Getter
+@Setter
 @Slf4j
-public class Bot extends TelegramWebhookBot {
+public class Bot extends TelegramLongPollingBot{
 
     private String botToken="2023748691:AAGVNOSX5YBmVK0ojy26pkBGLGoYlz7o1l8";
     private String botUserName="@testerforhelp_bot";
@@ -25,37 +31,23 @@ public class Bot extends TelegramWebhookBot {
     public String getBotUsername() {
         return botUserName;
     }
-    public String getBotToken() {
-        return this.botToken;
+
+    public void onUpdateReceived(Update update) {
+        if (update.hasMessage()) {
+            log.info("TelegramBot onUpdateReceived {}", update);
+
+            final BotApiMethod<?> replyMessageToUser = telegramFacade.handleUpdate(update);
+            sendMessage(replyMessageToUser);
+        }
+      else if (update.hasCallbackQuery()) {}
     }
 
-    public String getWebHookPath() {
-        return this.webHookPath;
+    private void sendMessage(BotApiMethod<?> message) {
+        try {
+            execute(message);
+        } catch (TelegramApiException e) {
+            log.error("Error sending message " + e.getMessage());
+        }
     }
 
-
-    public void setBotToken(String botToken) {
-        this.botToken = botToken;
-    }
-
-    public void setBotUserName(String botUserName) {
-        this.botUserName = botUserName;
-    }
-
-    public void setWebHookPath(String webHookPath) {
-        this.webHookPath = webHookPath;
-    }
-
-    @Override
-    public BotApiMethod<?> onWebhookUpdateReceived(Update update) {
-        log.info("TelegramBot onWebhookUpdateReceived {}", update);
-        SendMessage replyMessageToUser = telegramFacade.handleUpdate(update);
-
-        return replyMessageToUser;
-    }
-
-    @Override
-    public String getBotPath() {
-        return webHookPath;
-    }
 }

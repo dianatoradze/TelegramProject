@@ -25,9 +25,9 @@ public class BotStateContext {
         }
 
         private InputMessageHandler findMessageHandler(BotState currentState) {
-            if (isFillingProfileState(currentState)) {
-                return messageHandlers.get(BotState.USER_PROFILE);//filling_profile
-            }
+//            if (isFillingProfileState(currentState)) {
+//                return messageHandlers.get(BotState.USER_PROFILE);//filling_profile
+//            }
 
             return messageHandlers.get(currentState);
         }
@@ -35,10 +35,9 @@ public class BotStateContext {
         private boolean isFillingProfileState(BotState currentState) {
             switch (currentState) {
                 case APART_SEARCH:
-                case ASK_SUM_BEGIN:
-                case ASK_SUM_FINISH:
-                case ASK_DATE_BEGIN:
+                case ASK_SUM:
 
+                case ASK_DATE_BEGIN:
                 case ASK_DATE_FINISH:
 
                 case APART_SEARCH_STARTED:

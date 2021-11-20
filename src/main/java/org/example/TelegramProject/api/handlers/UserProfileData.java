@@ -13,9 +13,11 @@ import java.util.Date;
 public class UserProfileData {
     String apartOneRoom;
     String apartTwoRoom;
+    String apartType;
     int sumBegin;
     int sumFinish;
+    int sum;
     Date dateBegin;
-    Date dateFinishReceived;
+    Date dateFinish;
     }
 

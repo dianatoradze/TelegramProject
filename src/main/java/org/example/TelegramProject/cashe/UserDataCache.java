@@ -11,16 +11,16 @@ import java.util.Map;
 @Component
 public class UserDataCache implements DataCashe {
 
-    private Map<@NonNull Long, BotState> usersBotStates = new HashMap<@lombok.NonNull Long, BotState>();
-    private Map<@NonNull Long, UserProfileData> usersProfileData = new HashMap<@lombok.NonNull Long, UserProfileData>();
+    private Map<Long, BotState> usersBotStates = new HashMap<@lombok.NonNull Long, BotState>();
+    private Map<Long, UserProfileData> usersProfileData = new HashMap<@lombok.NonNull Long, UserProfileData>();
 
     @Override
-    public void setUsersCurrentBotState(@lombok.NonNull Long userId, BotState botState) {
+    public void setUsersCurrentBotState(Long userId, BotState botState) {
         usersBotStates.put(userId, botState);
     }
 
     @Override
-    public BotState getUsersCurrentBotState(@lombok.NonNull Long userId) {
+    public BotState getUsersCurrentBotState(Long userId) {
         BotState botState = usersBotStates.get(userId);
         if (botState == null) {
             botState = BotState.APART_SEARCH;
@@ -30,7 +30,7 @@ public class UserDataCache implements DataCashe {
     }
 
     @Override
-    public UserProfileData getUserProfileData(@lombok.NonNull Long userId) {
+    public UserProfileData getUserProfileData( Long userId) {
         UserProfileData userProfileData = usersProfileData.get(userId);
         if (userProfileData == null) {
             userProfileData = new UserProfileData();
@@ -39,7 +39,7 @@ public class UserDataCache implements DataCashe {
     }
 
     @Override
-    public void saveUserProfileData(@lombok.NonNull Long userId, UserProfileData userProfileData) {
+    public void saveUserProfileData(Long userId, UserProfileData userProfileData) {
         usersProfileData.put(userId, userProfileData);
     }
 

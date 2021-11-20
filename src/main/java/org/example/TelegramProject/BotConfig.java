@@ -1,5 +1,7 @@
 package org.example.TelegramProject;
 
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.example.TelegramProject.api.TelegramFacade;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -8,7 +10,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-
+@Getter
+@Setter
 @Slf4j
 @Configuration
 @ConfigurationProperties(prefix = "telegrambot")
@@ -25,7 +28,7 @@ public class BotConfig {
 
         bot.setBotUserName(botUserName);
         bot.setBotToken(botToken);
-        bot.setWebHookPath(webHookPatch);
+//        bot.setWebHookPath(webHookPatch);
         return bot;
     }
 
@@ -38,28 +41,4 @@ public class BotConfig {
         return messageSource;
     }
 
-
-    public String getBotToken() {
-        return this.botToken;
-    }
-
-    public String getBotUserName() {
-        return this.botUserName;
-    }
-
-    public String getWebHookPatch() {
-        return this.webHookPatch;
-    }
-
-    public void setBotToken(String botToken) {
-        this.botToken = botToken;
-    }
-
-    public void setBotUserName(String botUserName) {
-        this.botUserName = botUserName;
-    }
-
-    public void setWebHookPatch(String webHookPatch) {
-        this.webHookPatch = webHookPatch;
-    }
 }

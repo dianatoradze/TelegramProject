@@ -8,12 +8,12 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 @Service
 public class ReplyMessagesService {
 
-    private LocaleMessageService localeMessageService;
+    private final LocaleMessageService localeMessageService;
 
     public ReplyMessagesService(LocaleMessageService messageService) {
         this.localeMessageService = messageService;
     }
-
+    // произошел сбой, изначально, как и далее chatId должно быть long, не String
     public SendMessage getReplyMessage(String chatId, String replyMessage) {
         return new SendMessage(chatId, localeMessageService.getMessage(replyMessage));
     }
@@ -21,5 +21,7 @@ public class ReplyMessagesService {
     public SendMessage getReplyMessage(String chatId, String replyMessage, Object... args) {
         return new SendMessage(chatId, localeMessageService.getMessage(replyMessage, args));
     }
-
+    public String getReplyText(String replyText) {
+        return localeMessageService.getMessage(replyText);
+    }
 }

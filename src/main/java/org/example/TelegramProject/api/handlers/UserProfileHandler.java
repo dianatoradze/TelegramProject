@@ -38,7 +38,7 @@ public class UserProfileHandler implements InputMessageHandler {
 
     private SendMessage processUsersInput(Message inputMsg) {
         int usersAnswer = Integer.parseInt(inputMsg.getText());
-        @lombok.NonNull Long userId = inputMsg.getFrom().getId();
+        Long userId = inputMsg.getFrom().getId();
         long chatId = inputMsg.getChatId();
 
         UserProfileData profileData = userDataCache.getUserProfileData(userId);
@@ -48,33 +48,38 @@ public class UserProfileHandler implements InputMessageHandler {
 
         if (botState.equals(BotState.APART_SEARCH)) {
             replyToUser = messagesService.getReplyMessage(String.valueOf(chatId), "reply.askApart");
-            userDataCache.setUsersCurrentBotState(userId, BotState.ASK_SUM_BEGIN); // следующее состояние
+            userDataCache.setUsersCurrentBotState(userId, BotState.ASK_SUM); // следующее состояние
         }
-        if (botState.equals(BotState.ASK_SUM_BEGIN)) {
-            profileData.setSumBegin(usersAnswer);
-                    replyToUser = messagesService.getReplyMessage(String.valueOf(chatId), "reply.askSumBegin");
+        if (botState.equals(BotState.ASK_SUM)) {
 
-            userDataCache.setUsersCurrentBotState(userId, BotState.ASK_SUM_FINISH);
-            // replyToUser = new SendMessage(chatId, String.format("%s %s", "Начальная сумма поиска", apartData));
-        }
-        if (botState.equals(BotState.ASK_SUM_FINISH)) {
-            profileData.setSumFinish(usersAnswer);
-            replyToUser = messagesService.getReplyMessage(String.valueOf(chatId), "reply.askSumFinish");
+            replyToUser = messagesService.getReplyMessage(String.valueOf(chatId), "reply.askSum");
+
             userDataCache.setUsersCurrentBotState(userId, BotState.ASK_DATE_BEGIN);
         }
         if (botState.equals(BotState.ASK_DATE_BEGIN)) {
-            //profileData.setDateBegin(usersAnswer);
+            profileData.setSum(usersAnswer);
+
             replyToUser = messagesService.getReplyMessage(String.valueOf(chatId), "reply.askDataBegin");
-            userDataCache.setUsersCurrentBotState(userId, BotState.DATE_FINISH_RECEIVED);
+            userDataCache.setUsersCurrentBotState(userId, BotState.ASK_DATE_FINISH);
         }
-        if (botState.equals(BotState.DATE_FINISH_RECEIVED)) {
-            //profileData.setDateFinishReceived(usersAnswer);
+        if (botState.equals(BotState.ASK_DATE_FINISH)) {
+            //profileData.setDateBegin(usersAnswer);
+
             replyToUser = messagesService.getReplyMessage(String.valueOf(chatId), "reply.askDataFinish");
-            userDataCache.setUsersCurrentBotState(userId, BotState.SHOW_MAIN_MENU);//profile_field
+            userDataCache.setUsersCurrentBotState(userId, BotState.ASK_TYPE_APART);
         }
-        if (botState.equals(BotState.SHOW_MAIN_MENU)) {
-            replyToUser = messagesService.getReplyMessage(String.valueOf(chatId), "reply.showMainMenu");
+        if (botState.equals(BotState.ASK_TYPE_APART)) {
+            //profileData.setDateFinishReceived(usersAnswer);
+            profileData.setApartType(String.valueOf(usersAnswer));
+            replyToUser = messagesService.getReplyMessage(String.valueOf(chatId), "reply.askTypeApart");
+            userDataCache.setUsersCurrentBotState(userId, BotState.USER_PROFILE);//profile_field
+        }
+
+        if (botState.equals(BotState.USER_PROFILE)) {
+            profileData.setApartType(String.valueOf(usersAnswer));
+
             userDataCache.setUsersCurrentBotState(userId, BotState.APART_SEARCH); // следующее состояние
+            replyToUser = messagesService.getReplyMessage(String.valueOf(chatId), "reply.profileFilled");
         }
 
 
