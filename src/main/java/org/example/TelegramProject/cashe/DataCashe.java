@@ -1,7 +1,7 @@
 package org.example.TelegramProject.cashe;
 
 import org.example.TelegramProject.api.BotState;
-import org.example.TelegramProject.api.handlers.UserProfileData;
+import org.example.TelegramProject.model.UserProfileData;
 
 public interface DataCashe {
     void setUsersCurrentBotState(@lombok.NonNull Long userId, BotState botState);

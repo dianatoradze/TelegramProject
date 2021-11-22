@@ -2,14 +2,16 @@ package org.example.TelegramProject;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.example.TelegramProject.api.TelegramFacade;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
-
-import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
+import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 @Getter
@@ -31,7 +33,7 @@ public class Bot extends TelegramLongPollingBot{
     public String getBotUsername() {
         return botUserName;
     }
-
+    @SneakyThrows
     public void onUpdateReceived(Update update) {
         if (update.hasMessage()) {
             log.info("TelegramBot onUpdateReceived {}", update);
@@ -39,7 +41,18 @@ public class Bot extends TelegramLongPollingBot{
             final BotApiMethod<?> replyMessageToUser = telegramFacade.handleUpdate(update);
             sendMessage(replyMessageToUser);
         }
-      else if (update.hasCallbackQuery()) {}
+        // дописать
+      else if (update.hasCallbackQuery()){
+            handleCallback(update.getCallbackQuery());
+        }
+
+    }
+    @SneakyThrows
+    private void handleCallback(CallbackQuery callbackQuery) {
+
+            Message message = callbackQuery.getMessage();
+            String data = callbackQuery.getData();
+
     }
 
     private void sendMessage(BotApiMethod<?> message) {

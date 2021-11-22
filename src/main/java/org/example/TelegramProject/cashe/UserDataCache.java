@@ -1,8 +1,7 @@
 package org.example.TelegramProject.cashe;
 
-import lombok.NonNull;
 import org.example.TelegramProject.api.BotState;
-import org.example.TelegramProject.api.handlers.UserProfileData;
+import org.example.TelegramProject.model.UserProfileData;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;

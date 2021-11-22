@@ -1,16 +1,21 @@
 package org.example.TelegramProject.api;
 
-import org.example.TelegramProject.api.handlers.UserProfileData;
+import org.example.TelegramProject.Bot;
+import org.example.TelegramProject.model.UserProfileData;
 import org.example.TelegramProject.cashe.UserDataCache;
 import lombok.extern.slf4j.Slf4j;
 import org.example.TelegramProject.service.MainMenuService;
+import org.example.TelegramProject.service.ReplyMessagesService;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 
 @Component
 @Slf4j //для тестирования
@@ -18,11 +23,17 @@ public class TelegramFacade {
     private BotStateContext botStateContext;
     private UserDataCache userDataCache;
     private MainMenuService mainMenuService;
+    private final Bot myBot;
+    private final ReplyMessagesService messagesService;
 
-    public TelegramFacade(BotStateContext botStateContext, UserDataCache userDataCache, MainMenuService mainMenuService) {
+    // проверить конструктор
+    public TelegramFacade(BotStateContext botStateContext, UserDataCache userDataCache,
+                          MainMenuService mainMenuService, @Lazy Bot myBot, ReplyMessagesService messagesService) {
         this.botStateContext = botStateContext;
         this.userDataCache = userDataCache;
         this.mainMenuService = mainMenuService;
+        this.myBot = myBot;
+        this.messagesService = messagesService;
     }
 
     public BotApiMethod<?> handleUpdate(Update update) {
@@ -32,6 +43,7 @@ public class TelegramFacade {
             CallbackQuery callbackQuery = update.getCallbackQuery();
             log.info("New callbackQuery from User: {}, userId: {}, with data: {}", update.getCallbackQuery().getFrom().getUserName(),
                     callbackQuery.getFrom().getId(), update.getCallbackQuery().getData());
+
             return processCallbackQuery(callbackQuery);
         }
         Message message = update.getMessage();
@@ -63,7 +75,6 @@ public class TelegramFacade {
             case "Мои предложения о поиске":
                 botState = BotState.SHOW_USER_PROFILE;
                 break;
-
             default:
                 botState = userDataCache.getUsersCurrentBotState(userId);
                 break;
@@ -86,7 +97,7 @@ public class TelegramFacade {
             callBackAnswer = new SendMessage(chatId, "Введи минимальную сумму аренды");
             userDataCache.setUsersCurrentBotState(Long.valueOf(userId), BotState.ASK_SUM);
         } else if (buttonQuery.getData().equals("buttonNo")) {
-            callBackAnswer = sendAnswerCallbackQuery("Возвращайся позже", true, buttonQuery);
+            callBackAnswer = sendAnswerCallbackQuery("Возвращайся позже", false, buttonQuery);
         }       //проверить параметр false/true
 
         //Выбор типа квартиры
@@ -106,13 +117,12 @@ public class TelegramFacade {
         } else {
             userDataCache.setUsersCurrentBotState(Long.valueOf(userId), BotState.SHOW_MAIN_MENU);
         }
-
+        
 
         return callBackAnswer;
 
-
     }
-
+    //объект ответа на запрос - всплывающие уведомления
     private AnswerCallbackQuery sendAnswerCallbackQuery(String text, boolean alert, CallbackQuery callbackquery) {
         AnswerCallbackQuery answerCallbackQuery = new AnswerCallbackQuery();
         answerCallbackQuery.setCallbackQueryId(callbackquery.getId());

@@ -1,17 +1,26 @@
 package org.example.TelegramProject.api.handlers;
 
+import lombok.extern.slf4j.Slf4j;
 import org.example.TelegramProject.api.BotState;
 import org.example.TelegramProject.api.InputMessageHandler;
 import org.example.TelegramProject.cashe.UserDataCache;
+import org.example.TelegramProject.model.UserProfileData;
+import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.example.TelegramProject.service.ReplyMessagesService;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 // Кэш в памяти usersBotStates: user_id и состояние бота пользователя
 // usersProfileData: user_id и данные профиля пользователя
-
+@Slf4j
+@Component
 public class UserProfileHandler implements InputMessageHandler {
 
     private UserDataCache userDataCache;
@@ -50,14 +59,20 @@ public class UserProfileHandler implements InputMessageHandler {
             replyToUser = messagesService.getReplyMessage(String.valueOf(chatId), "reply.askApart");
             userDataCache.setUsersCurrentBotState(userId, BotState.ASK_SUM); // следующее состояние
         }
-        if (botState.equals(BotState.ASK_SUM)) {
+        if (botState.equals(BotState.ASK_TYPE_APART)) {
 
+            replyToUser = messagesService.getReplyMessage(String.valueOf(chatId), "reply.askTypeApart");
+            replyToUser.setReplyMarkup(getApartTypeButtonsMarkup());
+        }
+        if (botState.equals(BotState.ASK_SUM)) {
+            profileData.setApartType(String.valueOf(usersAnswer));
             replyToUser = messagesService.getReplyMessage(String.valueOf(chatId), "reply.askSum");
 
-            userDataCache.setUsersCurrentBotState(userId, BotState.ASK_DATE_BEGIN);
+            userDataCache.setUsersCurrentBotState(userId, BotState.ASK_TYPE_APART);
         }
+
         if (botState.equals(BotState.ASK_DATE_BEGIN)) {
-            profileData.setSum(usersAnswer);
+            profileData.setSum(String.valueOf(usersAnswer));
 
             replyToUser = messagesService.getReplyMessage(String.valueOf(chatId), "reply.askDataBegin");
             userDataCache.setUsersCurrentBotState(userId, BotState.ASK_DATE_FINISH);
@@ -66,26 +81,39 @@ public class UserProfileHandler implements InputMessageHandler {
             //profileData.setDateBegin(usersAnswer);
 
             replyToUser = messagesService.getReplyMessage(String.valueOf(chatId), "reply.askDataFinish");
-            userDataCache.setUsersCurrentBotState(userId, BotState.ASK_TYPE_APART);
+            userDataCache.setUsersCurrentBotState(userId, BotState.USER_PROFILE);
         }
-        if (botState.equals(BotState.ASK_TYPE_APART)) {
-            //profileData.setDateFinishReceived(usersAnswer);
-            profileData.setApartType(String.valueOf(usersAnswer));
-            replyToUser = messagesService.getReplyMessage(String.valueOf(chatId), "reply.askTypeApart");
-            userDataCache.setUsersCurrentBotState(userId, BotState.USER_PROFILE);//profile_field
-        }
-
         if (botState.equals(BotState.USER_PROFILE)) {
-            profileData.setApartType(String.valueOf(usersAnswer));
 
-            userDataCache.setUsersCurrentBotState(userId, BotState.APART_SEARCH); // следующее состояние
+            userDataCache.setUsersCurrentBotState(userId, BotState.SHOW_MAIN_MENU); // следующее состояние
             replyToUser = messagesService.getReplyMessage(String.valueOf(chatId), "reply.profileFilled");
         }
-
 
         userDataCache.saveUserProfileData(userId, profileData);
 
         return replyToUser;
+    }
+
+    private InlineKeyboardMarkup getApartTypeButtonsMarkup() {
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        InlineKeyboardButton buttonTypeOne = new InlineKeyboardButton();
+        buttonTypeOne.setText("1к");
+        InlineKeyboardButton buttonTypeTwo = new InlineKeyboardButton();
+        buttonTypeTwo.setText("2к");
+
+        buttonTypeOne.setCallbackData("buttonTypeOne");
+        buttonTypeTwo.setCallbackData("buttonTypeTwo");
+
+        List<InlineKeyboardButton> keyboardButtonsRow1 = new ArrayList<>();
+        keyboardButtonsRow1.add(buttonTypeOne);
+        keyboardButtonsRow1.add(buttonTypeTwo);
+
+        List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
+        rowList.add(keyboardButtonsRow1);
+
+        inlineKeyboardMarkup.setKeyboard(rowList);
+
+    return inlineKeyboardMarkup;
     }
 
 

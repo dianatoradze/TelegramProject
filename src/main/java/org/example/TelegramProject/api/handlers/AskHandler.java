@@ -1,5 +1,6 @@
 package org.example.TelegramProject.api.handlers;
 
+import lombok.SneakyThrows;
 import org.example.TelegramProject.api.BotState;
 import org.example.TelegramProject.api.InputMessageHandler;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -10,6 +11,7 @@ import org.example.TelegramProject.service.ReplyMessagesService;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,9 +45,10 @@ public class AskHandler implements InputMessageHandler {
         long chatId = inputMsg.getChatId();
 
         SendMessage replyToUser = messagesService.getReplyMessage(String.valueOf(chatId), "reply.askApart");
+
         replyToUser.setReplyMarkup(getInlineMessageButtons());
 
-        return replyToUser;
+       return replyToUser;
     }
     private InlineKeyboardMarkup getInlineMessageButtons() {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
