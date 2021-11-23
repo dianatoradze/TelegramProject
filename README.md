@@ -9,3 +9,5 @@ https://www.dropbox.com/s/2218nn8rsqifx0n/%D0%92%D0%B2%D0%B5%D0%B4%D0%B5%D0%BD%D
 
 
 ![кнопки](https://user-images.githubusercontent.com/61248243/142728571-a82f5c0f-030b-4f53-9541-6445e80eefa4.png)
+
+![диалог](https://user-images.githubusercontent.com/61248243/142995045-fd665cf8-639f-4d51-ad5e-dc07ae280e8b.png)
