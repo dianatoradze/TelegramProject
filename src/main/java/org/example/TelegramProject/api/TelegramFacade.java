@@ -67,14 +67,15 @@ public class TelegramFacade {
                 botState = BotState.APART_SEARCH;
                 break;
             case "Получить предложение о поиске":
-                botState = BotState.USER_PROFILE; // добавить состояние, изменить filling profile
-                break;
-            case "Помощь":
-                botState = BotState.SHOW_HELP_MENU;
+                botState = BotState.FILLING_PROFILE; // проверить состояние
                 break;
             case "Мои предложения о поиске":
                 botState = BotState.SHOW_USER_PROFILE;
                 break;
+            case "Помощь":
+                botState = BotState.SHOW_HELP_MENU;
+                break;
+
             default:
                 botState = userDataCache.getUsersCurrentBotState(userId);
                 break;
@@ -95,9 +96,9 @@ public class TelegramFacade {
         //выбор кнопок
         if (buttonQuery.getData().equals("buttonYes")) {
             callBackAnswer = new SendMessage(chatId, "Введи минимальную сумму аренды");
-            userDataCache.setUsersCurrentBotState(Long.valueOf(userId), BotState.ASK_SUM);
+            userDataCache.setUsersCurrentBotState(Long.valueOf(userId), BotState.ASK_TYPE_APART);
         } else if (buttonQuery.getData().equals("buttonNo")) {
-            callBackAnswer = sendAnswerCallbackQuery("Возвращайся позже", false, buttonQuery);
+            callBackAnswer = sendAnswerCallbackQuery("Возвращайся позже", true, buttonQuery);
         }       //проверить параметр false/true
 
         //Выбор типа квартиры
@@ -106,22 +107,22 @@ public class TelegramFacade {
             userProfileData.setApartOneRoom("Однокомнатная");
             userDataCache.saveUserProfileData(Long.valueOf(userId), userProfileData);
             userDataCache.setUsersCurrentBotState(Long.valueOf(userId), BotState.ASK_DATE_BEGIN);
-            callBackAnswer = new SendMessage(chatId, "Твоя начальная сумма аренды ");
+            callBackAnswer = new SendMessage(chatId, "Рассматриваете вариант с комиссией?");
         } else if (buttonQuery.getData().equals("buttonTypeTwo")) {
             UserProfileData userProfileData = userDataCache.getUserProfileData(Long.valueOf(userId));
             userProfileData.setApartTwoRoom("Двухкомнатная");
             userDataCache.saveUserProfileData(Long.valueOf(userId), userProfileData);
             userDataCache.setUsersCurrentBotState(Long.valueOf(userId), BotState.ASK_DATE_BEGIN);
-            callBackAnswer = new SendMessage(chatId, "Выберите дату начала проживания");
+            callBackAnswer = new SendMessage(chatId, "Рассматриваете вариант с комиссией?");
 
         } else {
             userDataCache.setUsersCurrentBotState(Long.valueOf(userId), BotState.SHOW_MAIN_MENU);
         }
-        
 
         return callBackAnswer;
 
     }
+
     //объект ответа на запрос - всплывающие уведомления
     private AnswerCallbackQuery sendAnswerCallbackQuery(String text, boolean alert, CallbackQuery callbackquery) {
         AnswerCallbackQuery answerCallbackQuery = new AnswerCallbackQuery();

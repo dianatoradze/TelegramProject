@@ -9,12 +9,11 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.example.TelegramProject.service.ReplyMessagesService;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 //Спрашивает пользователя - хочет ли он получить предложение о поиске аренды
 @Slf4j
@@ -48,7 +47,7 @@ public class AskHandler implements InputMessageHandler {
 
         replyToUser.setReplyMarkup(getInlineMessageButtons());
 
-       return replyToUser;
+        return replyToUser;
     }
     private InlineKeyboardMarkup getInlineMessageButtons() {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
@@ -73,6 +72,7 @@ public class AskHandler implements InputMessageHandler {
         inlineKeyboardMarkup.setKeyboard(rowList);
 
         return inlineKeyboardMarkup;
+
     }
 
 }

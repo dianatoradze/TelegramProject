@@ -18,6 +18,7 @@ public class UserProfileData {
     String apartType;
     String apartOneRoom;
     String apartTwoRoom;
+
     String sum;
     Date dateBegin;
     Date dateFinish;

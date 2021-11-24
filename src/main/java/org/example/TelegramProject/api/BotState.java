@@ -2,8 +2,6 @@ package org.example.TelegramProject.api;
 
 public enum BotState {
     APART_SEARCH,
-    APART_SEARCH_STARTED,
-    APART_SEARCH_FINISH,
     ASK_SUM,
 
     ASK_DATE_BEGIN,
@@ -15,7 +13,7 @@ public enum BotState {
 
     ASK_TYPE_APART,
 
-    USER_PROFILE,
+    FILLING_PROFILE,
     PROFILE_FILLED,
     SHOW_MAIN_MENU,
     SHOW_HELP_MENU;
