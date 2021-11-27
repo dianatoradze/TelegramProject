@@ -32,7 +32,7 @@ public class UserDataCache implements DataCashe {
     public UserProfileData getUserProfileData( Long userId) {
         UserProfileData userProfileData = usersProfileData.get(userId);
         if (userProfileData == null) {
-            userProfileData = new UserProfileData();
+            userProfileData = new UserProfileData();//изменить
         }
         return userProfileData;
     }

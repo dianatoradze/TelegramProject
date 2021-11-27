@@ -1,5 +1,6 @@
 package org.example.TelegramProject.api;
 
+import lombok.SneakyThrows;
 import org.example.TelegramProject.Bot;
 import org.example.TelegramProject.model.UserProfileData;
 import org.example.TelegramProject.cashe.UserDataCache;
@@ -8,14 +9,20 @@ import org.example.TelegramProject.service.MainMenuService;
 import org.example.TelegramProject.service.ReplyMessagesService;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ResourceUtils;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 
 @Component
 @Slf4j //для тестирования
@@ -23,8 +30,8 @@ public class TelegramFacade {
     private BotStateContext botStateContext;
     private UserDataCache userDataCache;
     private MainMenuService mainMenuService;
-    private final Bot myBot;
-    private final ReplyMessagesService messagesService;
+    private Bot myBot;
+    private ReplyMessagesService messagesService;
 
     // проверить конструктор
     public TelegramFacade(BotStateContext botStateContext, UserDataCache userDataCache,
@@ -58,18 +65,20 @@ public class TelegramFacade {
 
     private SendMessage handleInputMessage(Message message) {
         String inputMsg = message.getText();
-        Long userId = message.getFrom().getId();
+        long chatId = message.getChatId();
+        long userId = message.getFrom().getId();
         BotState botState;
-        SendMessage replyMessage;
+        SendMessage replyMessage = null;
 
         switch (inputMsg) {
             case "/start":
                 botState = BotState.APART_SEARCH;
                 break;
-            case "Получить предложение о поиске":
+            case "Выполнить поиск аренды?":
                 botState = BotState.FILLING_PROFILE; // проверить состояние
                 break;
-            case "Мои предложения о поиске":
+            case "Мои варианты":
+                myBot.getInfo(replyMessage);
                 botState = BotState.SHOW_USER_PROFILE;
                 break;
             case "Помощь":
@@ -111,7 +120,7 @@ public class TelegramFacade {
         } else if (buttonQuery.getData().equals("buttonTypeTwo")) {
             UserProfileData userProfileData = userDataCache.getUserProfileData(Long.valueOf(userId));
             userProfileData.setApartTwoRoom("Двухкомнатная");
-            userDataCache.saveUserProfileData(Long.valueOf(userId), userProfileData);
+            //userDataCache.saveUserProfileData(Long.valueOf(userId), userProfileData);
             userDataCache.setUsersCurrentBotState(Long.valueOf(userId), BotState.ASK_DATE_BEGIN);
             callBackAnswer = new SendMessage(chatId, "Рассматриваете вариант с комиссией?");
 
@@ -131,5 +140,7 @@ public class TelegramFacade {
         answerCallbackQuery.setText(text);
         return answerCallbackQuery;
     }
+
 }
+
 

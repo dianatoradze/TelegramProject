@@ -15,7 +15,6 @@ public class TelegramBotApplication extends SpringBootServletInitializer {
 
 	public static void main(String[] args) {
 
-		//ApiContextInitializer.init();
 	    SpringApplication.run(TelegramBotApplication.class, args);
 
 	}

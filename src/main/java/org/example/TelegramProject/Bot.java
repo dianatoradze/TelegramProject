@@ -5,15 +5,19 @@ import lombok.Setter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.example.TelegramProject.api.TelegramFacade;
+import org.example.TelegramProject.parcer.Apart;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
-import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
-import org.telegram.telegrambots.meta.api.objects.Message;
+
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+
+import javax.imageio.ImageIO;
+import javax.imageio.stream.ImageOutputStream;
+import java.awt.image.BufferedImage;
+import java.net.URL;
 
 @Getter
 @Setter
@@ -24,6 +28,8 @@ public class Bot extends TelegramLongPollingBot {
     private String botUserName = "@testerforhelp_bot";
     private String webHookPath = "https://21b0-2a00-1fa2-279-4176-b153-358a-e9ab-8a37.ngrok.io";
     private final TelegramFacade telegramFacade;
+    Apart apart = new Apart();
+    private long chatId;
 
     public Bot(TelegramFacade telegramFacade) {
 
@@ -42,14 +48,19 @@ public class Bot extends TelegramLongPollingBot {
             log.info("TelegramBot onUpdateReceived {}", update);
 
             sendMessage(replyMessageToUser);
+            if(replyMessageToUser.equals("Мои варианты")){
+                getInfo(replyMessageToUser);
+                sendMessage(replyMessageToUser);
+            }
         }
         // обработка отклика с клавиатуры
-         if (update.hasCallbackQuery()) {
+        if (update.hasCallbackQuery()) {
             try {
                 execute(replyMessageToUser);
             } catch (TelegramApiException e) {
                 e.printStackTrace();
             }
+
         }
     }
 
@@ -61,4 +72,39 @@ public class Bot extends TelegramLongPollingBot {
         }
     }
 
+
+    @SneakyThrows
+    public String getInfo(BotApiMethod<?> message) {
+
+        URL url = new URL(apart.getImage());
+        BufferedImage img = ImageIO.read(url);
+        // качаем изображение в буфер
+        InputFile outputfile = new InputFile("image.jpg");
+        //создаем новый файл в который поместим  изображение
+        ImageIO.write(img, "jpg", (ImageOutputStream) outputfile);
+
+        //преобразовуем  буферное изображение в новый файл
+
+        sendPhoto(chatId, outputfile);
+
+        String info = apart.getTitle()
+                + "\nАдрес" + apart.getAdress()
+                + "\nКоличество комнат" + apart.getApartType()
+                + "\n\nОписание\n" + apart.getDescription()
+                + "\n\nВремя размещения объявления " + apart.getDate();
+
+        return info;
+    }
+
+    @SneakyThrows
+    public void sendPhoto(long chatId, InputFile imageCaption) {
+
+        SendPhoto sendPhoto = new SendPhoto();
+        sendPhoto.setChatId(String.valueOf(chatId));
+        sendPhoto.setCaption(String.valueOf(imageCaption));
+        execute(sendPhoto);
+    }
+
 }
+
+

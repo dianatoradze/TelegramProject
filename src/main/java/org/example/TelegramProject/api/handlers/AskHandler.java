@@ -58,7 +58,7 @@ public class AskHandler implements InputMessageHandler {
 
         buttonYes.setText("Да");
         buttonNo.setText("Нет, спасибо");
-        //Каждая кнопка через callBackData, или не работает
+        //Заменить одной строкой/ButtonService
         buttonYes.setCallbackData("buttonYes");
         buttonNo.setCallbackData("buttonNo");
 
