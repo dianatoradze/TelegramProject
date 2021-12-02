@@ -78,14 +78,15 @@ public class UserProfileHandler implements InputMessageHandler {
         }
         if (botState.equals(BotState.ASK_DATE_FINISH)) {
 
-            //String dateFinish = format.parse(profileData.setDateBegin(usersAnswer));
+            profileData.setDateBegin(usersAnswer);
 
             replyToUser = messagesService.getReplyMessage(String.valueOf(chatId), "reply.askDataFinish");
             userDataCache.setUsersCurrentBotState(userId, BotState.PROFILE_FILLED);
         }
         if (botState.equals(BotState.PROFILE_FILLED)) {
+            profileData.setDateFinish(usersAnswer);
             profileData.setChatId(chatId);
-            //profileDataService.saveUserProfileData(profileData);
+            profileDataService.saveUserProfileData(profileData);
             userDataCache.setUsersCurrentBotState(userId, BotState.SHOW_MAIN_MENU); // следующее состояние
             //String profileFilledMessage = messagesService.getReplyMessage("reply.profileFilled", String.valueOf(profileData.getChatId()));
             replyToUser = messagesService.getReplyMessage(String.valueOf(chatId), "reply.profileFilled");

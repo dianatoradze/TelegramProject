@@ -10,8 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Apart {
-
     List<Apart> apartList = new ArrayList<>();
+    Parcer parcer;
     private Document document;
 
     public Apart() {
@@ -19,54 +19,67 @@ public class Apart {
     }
 
     //подключаемся к странице
-    private void connect(){
-        try{
-            document = Jsoup.connect("https://www.avito.ru/ekaterinburg/kvartiry").get();
-        }catch (IOException e){
+    private void connect() {
+        try {
+            document = Jsoup.connect("https://www.avito.ru/ekaterinburg/kvartiry/sdam-ASgBAgICAUSSA8gQ").get();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     //получаем название объявления
-    public String getTitle(){
+    public String getTitle() {
         return document.title();
     }
 
     //читаем описание
-    public String getDescription(){
-        Elements element = document.getElementsByClass("title-info-title-text");
+    public String getDescription() {
+        Elements element = document.getElementsByClass("links-row-Gormg");
         return element.text();
     }
 
     //тип квартиры
-    public String getApartType(){
-        Element element = document.getElementsByClass("item-params-label").get(0);
-        return element.text();
+    public String getApartType() {
+        Elements element = document.getElementsByAttributeValue("href", "title");
+        String type = String.valueOf(element.val("title"));
+        type = type.replace(",", "");
+        //чистим  от лишнего
+
+        return type;
     }
 
     //последние объявления по дате
-    public String getDate(){
-        Elements elements = document.getElementsByClass("title-info-metadata-item-redesign");
+    public String getDate() {
+        Elements elements = document.getElementsByClass("iva-item-dateInfoStep-_dkz9");
 
         String date = elements.text();
-        //чистим от текста
 
         return date;
     }
 
     //берем изображение из объявления
-    public String getImage(){
-        Elements elements = document.getElementsByClass("gallery-img-frame js-gallery-img-frame");
+    public String getImage() {
+        //iva-item-slider-GWoCM
+        Elements elements = document.getElementsByClass("photo-slider-item-o_UGQ photo-slider-keepImageRatio-NrG6s");
         String url = elements.attr("style");
         //чистим url от лишнего
-        url = url.replace("background-image: url('", "");
+
         url = url.replace("');", "");
+
+        //чистим url от лишнего
+
         return url;
     }
 
     //адрес квартиры
-    public String getAdress(){
-        Elements elements = document.getElementsByClass("item-address__string");
+    public String getAdress() {
+        Elements elements = document.getElementsByClass("iva-item-developmentNameStep-n46gZ");
         return elements.text();
     }
+
+    public String getSum() {
+        Elements elements = document.getElementsByClass("iva-item-priceStep-QN8Kl");
+        return elements.text();
+    }
+
 }

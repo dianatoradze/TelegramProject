@@ -55,14 +55,15 @@ public class TelegramFacade {
         }
         Message message = update.getMessage();
         if (message != null && message.hasText()) {
-            log.info("New message from User:{}, chatId: {},  with text: {}",
-                    message.getFrom().getUserName(), message.getChatId(), message.getText());
+            log.info("New message from User:{}, userId: {}, chatId: {},  with text: {}",
+                    message.getFrom().getUserName(),message.getFrom().getId(), message.getChatId(), message.getText());
             replyMessage = handleInputMessage(message);
         }
 
         return replyMessage;
     }
 
+    @SneakyThrows
     private SendMessage handleInputMessage(Message message) {
         String inputMsg = message.getText();
         long chatId = message.getChatId();
@@ -78,7 +79,7 @@ public class TelegramFacade {
                 botState = BotState.FILLING_PROFILE; // проверить состояние
                 break;
             case "Мои варианты":
-                myBot.getInfo(replyMessage);
+                myBot.getInfo(inputMsg);
                 botState = BotState.SHOW_USER_PROFILE;
                 break;
             case "Помощь":
@@ -113,14 +114,14 @@ public class TelegramFacade {
         //Выбор типа квартиры
         else if (buttonQuery.getData().equals("buttonTypeOne")) {
             UserProfileData userProfileData = userDataCache.getUserProfileData(Long.valueOf(userId));
-            userProfileData.setApartOneRoom("Однокомнатная");
+            userProfileData.setApartType("Однокомнатная");
             userDataCache.saveUserProfileData(Long.valueOf(userId), userProfileData);
             userDataCache.setUsersCurrentBotState(Long.valueOf(userId), BotState.ASK_DATE_BEGIN);
             callBackAnswer = new SendMessage(chatId, "Рассматриваете вариант с комиссией?");
         } else if (buttonQuery.getData().equals("buttonTypeTwo")) {
             UserProfileData userProfileData = userDataCache.getUserProfileData(Long.valueOf(userId));
-            userProfileData.setApartTwoRoom("Двухкомнатная");
-            //userDataCache.saveUserProfileData(Long.valueOf(userId), userProfileData);
+            userProfileData.setApartType("Двухкомнатная");
+            userDataCache.saveUserProfileData(Long.valueOf(userId), userProfileData);
             userDataCache.setUsersCurrentBotState(Long.valueOf(userId), BotState.ASK_DATE_BEGIN);
             callBackAnswer = new SendMessage(chatId, "Рассматриваете вариант с комиссией?");
 

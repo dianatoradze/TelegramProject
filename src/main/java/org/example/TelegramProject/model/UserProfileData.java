@@ -1,49 +1,36 @@
 package org.example.TelegramProject.model;
 
 import lombok.*;
-import lombok.experimental.FieldDefaults;
-
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.Date;
-
 
 //Данные  пользователя
-@Data
+@Getter
+@Setter
+@ToString
 @Entity
 @Table(name = "users")
 
-@RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
-//@Apart(collection = "userProfileData")
+@AllArgsConstructor
+@NoArgsConstructor
 
 public class UserProfileData implements Serializable {
+    @NotNull
     @Id
+    @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "chatId")
-    private long chatId;
-
+    private String id;
 
     @Column(name = "sum")
     private String sum;
     @Column (name="apartType")
     private String apartType;
     @Column(name="dateBegin")
-    private Date dateBegin;
+    private String dateBegin;
     @Column(name="dateFinish")
-    private Date dateFinish;
+    private String dateFinish;
+    private long chatId;
 
-
-    private String ApartOneRoom;
-    private String ApartTwoRoom;
-
-    public UserProfileData(long chatId, String sum, String apartType, Date dateBegin, Date dateFinish) {
-        this.chatId = chatId;
-        this.sum = sum;
-        this.apartType = apartType;
-        this.dateBegin = dateBegin;
-        this.dateFinish = dateFinish;
-
-    }
 }
 

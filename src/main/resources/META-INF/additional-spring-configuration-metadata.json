@@ -1,0 +1,8 @@
+{
+  "properties": [
+    {
+      "name": "telegrambot.userName",
+      "type": "java.lang.String",
+      "description": "Description for telegrambot.userName."
+  }
+] }

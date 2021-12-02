@@ -14,17 +14,15 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import java.util.ArrayList;
 import java.util.List;
 
-
 //Спрашивает пользователя - хочет ли он получить предложение о поиске аренды
 @Slf4j
 @Component
 public class AskHandler implements InputMessageHandler {
 
-    //private UserDataCache userDataCache;
     private ReplyMessagesService messagesService;
 
     public AskHandler(ReplyMessagesService messagesService) {
-        //this.userDataCache = userDataCache;
+
         this.messagesService = messagesService;
     }
 
@@ -40,7 +38,6 @@ public class AskHandler implements InputMessageHandler {
 
     private SendMessage processUsersInput(Message inputMsg) {
 
-        //Long userId = inputMsg.getFrom().getId();
         long chatId = inputMsg.getChatId();
 
         SendMessage replyToUser = messagesService.getReplyMessage(String.valueOf(chatId), "reply.askApart");
@@ -55,17 +52,19 @@ public class AskHandler implements InputMessageHandler {
         InlineKeyboardButton buttonYes = new InlineKeyboardButton();
 
         InlineKeyboardButton buttonNo = new InlineKeyboardButton();
-
-        buttonYes.setText("Да");
+        InlineKeyboardButton buttonMenu = new InlineKeyboardButton();
         buttonNo.setText("Нет, спасибо");
+        buttonYes.setText("Да");
+        buttonMenu.setText("Перейти в меню");
         //Заменить одной строкой/ButtonService
         buttonYes.setCallbackData("buttonYes");
         buttonNo.setCallbackData("buttonNo");
+        buttonMenu.setCallbackData("buttonMenu");
 
         List<InlineKeyboardButton> keyboardButtonsRow1 = new ArrayList<>();
         keyboardButtonsRow1.add(buttonYes);
         keyboardButtonsRow1.add(buttonNo);
-
+        keyboardButtonsRow1.add(buttonMenu);
         List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
         rowList.add(keyboardButtonsRow1);
 

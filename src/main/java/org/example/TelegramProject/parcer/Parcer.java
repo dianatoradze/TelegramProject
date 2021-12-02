@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 
 public abstract class Parcer {
     protected static final String PRICE_PATTERN = "\\b([0-9,]*)\\b";
-    protected static final String CIAN_LINK_PREFIX = "https://ekb.cian.ru";
+    protected static final String CIAN_LINK_PREFIX = "https://www.avito.ru/ekaterinburg/kvartiry/sdam-ASgBAgICAUSSA8gQ";
 
     protected double parseSum(String price) {
         try {

@@ -48,10 +48,7 @@ public class Bot extends TelegramLongPollingBot {
             log.info("TelegramBot onUpdateReceived {}", update);
 
             sendMessage(replyMessageToUser);
-            if(replyMessageToUser.equals("Мои варианты")){
-                getInfo(replyMessageToUser);
-                sendMessage(replyMessageToUser);
-            }
+
         }
         // обработка отклика с клавиатуры
         if (update.hasCallbackQuery()) {
@@ -74,23 +71,24 @@ public class Bot extends TelegramLongPollingBot {
 
 
     @SneakyThrows
-    public String getInfo(BotApiMethod<?> message) {
-
-        URL url = new URL(apart.getImage());
-        BufferedImage img = ImageIO.read(url);
-        // качаем изображение в буфер
-        InputFile outputfile = new InputFile("image.jpg");
-        //создаем новый файл в который поместим  изображение
-        ImageIO.write(img, "jpg", (ImageOutputStream) outputfile);
-
-        //преобразовуем  буферное изображение в новый файл
-
-        sendPhoto(chatId, outputfile);
+    public String getInfo(String message)  {
+//
+//        URL url = new URL(apart.getImage());
+//        BufferedImage img = ImageIO.read(url);
+//        // качаем изображение в буфер
+//        InputFile outputfile = new InputFile("image.jpg");
+//        //создаем новый файл в который поместим  изображение
+//        ImageIO.write(img, "jpg", (ImageOutputStream) outputfile);
+//
+//        //преобразовуем  буферное изображение в новый файл
+//
+//        sendPhoto(chatId, outputfile);
 
         String info = apart.getTitle()
                 + "\nАдрес" + apart.getAdress()
                 + "\nКоличество комнат" + apart.getApartType()
                 + "\n\nОписание\n" + apart.getDescription()
+                + "\n\nОписание\n" + apart.getSum()
                 + "\n\nВремя размещения объявления " + apart.getDate();
 
         return info;

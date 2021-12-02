@@ -6,9 +6,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 // чтобы пропустить ошибку Failed to determine suitable jdbc url
-@EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class})
+//@EnableJpaRepositories("org.example.TelegramProject")
+@EnableAutoConfiguration (exclude={DataSourceAutoConfiguration.class})
 
 @SpringBootApplication
 public class TelegramBotApplication extends SpringBootServletInitializer {
