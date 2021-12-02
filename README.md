@@ -1,10 +1,10 @@
 # TelegramProject
-В ветке repository расположен проект
+В ветке repository расположен проект последние изменения
 сначала создавался как maven проект, сейчас через spring
 переделан с webhook на longpolling
-последние изменения
-https://www.dropbox.com/s/1igmiiea3v19d6x/%D0%9C%D0%B5%D0%BD%D1%8E.mp4?dl=0![меню](https://user-images.githubusercontent.com/61248243/144370290-686d79c1-a20d-419c-8adf-f8e6b537f744.png)
-![Uploading меню.png…]()
+
+https://www.dropbox.com/s/1igmiiea3v19d6x/%D0%9C%D0%B5%D0%BD%D1%8E.mp4?dl=0
+![меню](https://user-images.githubusercontent.com/61248243/144411568-73dec86e-d15a-480e-aadd-5bbbbf3ec0ed.png)
 
 последние изменения через ветку service, по dev написано видео:
 https://www.dropbox.com/s/n0fkzr7zso2j1jb/%D0%A0%D0%B0%D0%B1%D0%BE%D1%82%D0%B0%20%D1%81%20%D0%BA%D0%BB%D0%B0%D1%81%D1%81%D0%B0%D0%BC%D0%B8.mp4?dl=0
