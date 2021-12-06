@@ -98,15 +98,7 @@ public class Bot extends TelegramLongPollingBot {
 
         return info;
     }
-//
-//    @SneakyThrows
-//    public void sendPhoto(long chatId, InputFile imageCaption) {
-//
-//        SendPhoto sendPhoto = new SendPhoto();
-//        sendPhoto.setChatId(String.valueOf(chatId));
-//        sendPhoto.setCaption(String.valueOf(imageCaption));
-//        execute(sendPhoto);
-//    }
+
 
 }
 

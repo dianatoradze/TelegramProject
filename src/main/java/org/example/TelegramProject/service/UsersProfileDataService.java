@@ -1,7 +1,7 @@
 package org.example.TelegramProject.service;
 
 import org.example.TelegramProject.model.UserProfileData;
-import org.example.TelegramProject.model.UserProfileDataRepository;
+import org.example.TelegramProject.repository.UserProfileDataRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

@@ -109,13 +109,13 @@ public class TelegramFacade {
             userProfileData.setApartType("Однокомнатная");
             userDataCache.saveUserProfileData(userId, userProfileData);
             userDataCache.setUsersCurrentBotState(userId, BotState.ASK_DATE_BEGIN);
-            //callBackAnswer = new SendMessage(chatId, "Рассматриваете вариант с комиссией?");
+            callBackAnswer = new SendMessage(chatId, "Рассматриваете вариант с комиссией?");
         } else if (buttonQuery.getData().equals("buttonTypeTwo")) {
             UserProfileData userProfileData = userDataCache.getUserProfileData(userId);
             userProfileData.setApartType("Двухкомнатная");
             userDataCache.saveUserProfileData(userId, userProfileData);
             userDataCache.setUsersCurrentBotState(userId, BotState.ASK_DATE_BEGIN);
-            //callBackAnswer = new SendMessage(chatId, "Рассматриваете вариант с комиссией?");
+            callBackAnswer = new SendMessage(chatId, "Рассматриваете вариант с комиссией?");
 
         } else {
             userDataCache.setUsersCurrentBotState(userId, BotState.SHOW_MAIN_MENU);
