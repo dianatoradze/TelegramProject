@@ -5,10 +5,13 @@ import lombok.Setter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.example.TelegramProject.api.TelegramFacade;
+import org.example.TelegramProject.cashe.DataCashe;
+import org.example.TelegramProject.cashe.UserDataCache;
 import org.example.TelegramProject.parcer.Apart;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 
+import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -16,6 +19,8 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import javax.imageio.stream.ImageOutputStream;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
+import java.io.File;
 import java.net.URL;
 
 import static javax.imageio.ImageIO.read;
@@ -32,6 +37,7 @@ public class Bot extends TelegramLongPollingBot {
     private final TelegramFacade telegramFacade;
     Apart apart = new Apart();
     private long chatId;
+    private UserDataCache userDataCache;
 
     public Bot(TelegramFacade telegramFacade) {
 
@@ -64,12 +70,13 @@ public class Bot extends TelegramLongPollingBot {
 
 
     @SneakyThrows
-    public String getInfo() throws Exception{
+    public String getInfo() throws Exception {
         try {
             URL url = new URL(apart.getImage());
             BufferedImage img = read(url);
             // качаем изображение в буфер
             InputFile outputfile = new InputFile("image.jpg");
+
             //создаем новый файл в который поместим  изображение
             write(img, "jpg", (ImageOutputStream) outputfile);
 
@@ -79,24 +86,44 @@ public class Bot extends TelegramLongPollingBot {
             sendPhoto.setChatId(String.valueOf(chatId));
             sendPhoto.setPhoto(outputfile);
             execute(sendPhoto);
+
         } catch (Exception e) {
             System.out.println("File not found");
             e.printStackTrace();
         }
 
-        String info =
+        StringBuilder info = new StringBuilder();
+//        info.append("\nСсылки на  квартиры");
+//        info.append(apart.getLink());
+//        info.append("\nСсылки на изображения");
+//
+//        info.append("\nРазмещение квартир" + apart.getApartType());
+//
+//        info.append("\nСсылки " +     apart.getLink() +      apart.getImage());
 
-        //    "\nРазмещение квартир" + apart.getApartType()
-                     apart.getImage();
-          //   + "\nАдреса " + apart.getAdress() + "\n";
-
-//        "\n\nОписание\n" + apart.getDescription();
-//               + "\n\Стоимость аренды\n" + apart.getSum();
-
-//                        + "\n\nВремя размещения объявления " + apart.getDate();
+            info.append("\nАдреса ");
+            info.append(apart.getAdress());
+            info.append("\nСтоимость аренды\n");
+            info.append(apart.getSum());
 
 
-        return info;
+
+//info.append("\n\nОписание\n");
+//info.append(apart.getDescription());
+
+//
+//   "\n\nВремя размещения объявления " + apart.getDate();
+
+        return String.valueOf(info);
+    }
+
+    @SneakyThrows
+    public void sendDocument(long chatId, String caption, InputFile sendFile) {
+        SendDocument sendDocument = new SendDocument();
+        sendDocument.setChatId(String.valueOf(chatId));
+        sendDocument.setCaption(caption);
+        sendDocument.setDocument(sendFile);
+        execute(sendDocument);
     }
 
 

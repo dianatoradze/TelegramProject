@@ -4,8 +4,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
-import org.telegram.telegrambots.meta.api.objects.InputFile;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -31,7 +29,14 @@ public class Apart {
 
     //получаем название объявления
     public String getLink() {
-        return document.title();
+        Elements links = document.select("a[href]");
+        //print("\nLinks: (%d)", links.size());
+        if (links.contains("квартира")) { for (Element link : links) {
+            print(" * a: <%s>  (%s)", link.attr("abs:href"), trim(link.text(), 35));
+        }
+        };
+
+        return String.valueOf(links);
     }
 
     //читаем описание
@@ -69,16 +74,13 @@ public class Apart {
         print("\nMedia: (%d)", media.size());
         for (Element src : media) {
             if (src.normalName().equals("img"))
-                print(" * %s: <%s> %sx%s (%s)",
+                 print(" * %s: <%s> %sx%s (%s)",
                         src.tagName(), src.attr("abs:src"), src.attr("width"), src.attr("height"),
                         trim(src.attr("alt"), 20));
-            else
-                print(" * %s: <%s>", src.tagName(), src.attr("abs:src"));
+
         }
-        print("\nMedia: (%d)", media.size());
 
-
-        return media.text();
+        return String.valueOf(media);
     }
 
     //адрес квартиры
@@ -97,8 +99,9 @@ public class Apart {
         else
             return s;
     }
-
     private static void print(String msg, Object... args) {
         System.out.println(String.format(msg, args));
     }
+
+
 }

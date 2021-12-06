@@ -2,19 +2,24 @@ package org.example.TelegramProject.api;
 
 import lombok.SneakyThrows;
 import org.example.TelegramProject.Bot;
-import org.example.TelegramProject.model.UserProfileData;
+import org.example.TelegramProject.model.User;
 import org.example.TelegramProject.cashe.UserDataCache;
 import lombok.extern.slf4j.Slf4j;
 import org.example.TelegramProject.service.MainMenuService;
 import org.example.TelegramProject.service.ReplyMessagesService;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ResourceUtils;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 
 @Component
 @Slf4j //для тестирования
@@ -58,7 +63,7 @@ public class TelegramFacade {
     @SneakyThrows
     private SendMessage handleInputMessage(Message message) {
         String inputMsg = message.getText();
-
+        long chatId = message.getChatId();
         Long userId = message.getFrom().getId();
         BotState botState;
         SendMessage replyMessage = null;
@@ -72,6 +77,11 @@ public class TelegramFacade {
                 break;
             case "Мои варианты":
                 myBot.getInfo();
+                botState = BotState.SHOW_USER_PROFILE;
+                break;
+            case "Скачать предложения":
+                //myBot.sendDocument(chatId, "Ссылки на ваши предложения", getUsersProfile(userId) );
+
                 botState = BotState.SHOW_USER_PROFILE;
                 break;
             case "Помощь":
@@ -105,13 +115,13 @@ public class TelegramFacade {
 
         //Выбор типа квартиры
         else if (buttonQuery.getData().equals("buttonTypeOne")) {
-            UserProfileData userProfileData = userDataCache.getUserProfileData(userId);
+            User userProfileData = userDataCache.getUserProfileData(userId);
             userProfileData.setApartType("Однокомнатная");
             userDataCache.saveUserProfileData(userId, userProfileData);
             userDataCache.setUsersCurrentBotState(userId, BotState.ASK_DATE_BEGIN);
             callBackAnswer = new SendMessage(chatId, "Рассматриваете вариант с комиссией?");
         } else if (buttonQuery.getData().equals("buttonTypeTwo")) {
-            UserProfileData userProfileData = userDataCache.getUserProfileData(userId);
+            User userProfileData = userDataCache.getUserProfileData(userId);
             userProfileData.setApartType("Двухкомнатная");
             userDataCache.saveUserProfileData(userId, userProfileData);
             userDataCache.setUsersCurrentBotState(userId, BotState.ASK_DATE_BEGIN);
@@ -132,6 +142,21 @@ public class TelegramFacade {
         answerCallbackQuery.setShowAlert(alert);
         answerCallbackQuery.setText(text);
         return answerCallbackQuery;
+    }
+
+    @SneakyThrows
+    public File getUsersProfile(Long userId) {
+        User userProfileData = userDataCache.getUserProfileData(userId);
+        File profileFile = ResourceUtils.getFile("classpath:data.xlsx");
+
+        try (FileWriter fw = new FileWriter(( profileFile).getAbsoluteFile());
+             BufferedWriter bw = new BufferedWriter(fw)) {
+            bw.write(myBot.getInfo());
+        }
+
+
+        return profileFile;
+
     }
 
 }

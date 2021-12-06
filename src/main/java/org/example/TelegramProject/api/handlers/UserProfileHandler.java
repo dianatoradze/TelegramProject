@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.TelegramProject.api.BotState;
 import org.example.TelegramProject.api.InputMessageHandler;
 import org.example.TelegramProject.cashe.UserDataCache;
-import org.example.TelegramProject.model.UserProfileData;
+import org.example.TelegramProject.model.User;
 import org.example.TelegramProject.service.UsersProfileDataService;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -55,7 +55,7 @@ public class UserProfileHandler implements InputMessageHandler {
         Long userId = inputMsg.getFrom().getId();                                                                                                                           userId = inputMsg.getFrom().getId();
         long chatId = inputMsg.getChatId();
 
-        UserProfileData profileData = userDataCache.getUserProfileData(userId);
+        User profileData = userDataCache.getUserProfileData(userId);
         BotState botState = userDataCache.getUsersCurrentBotState(userId);
         SimpleDateFormat format = new SimpleDateFormat("dd-MM");
 

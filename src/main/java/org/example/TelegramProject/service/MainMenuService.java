@@ -34,6 +34,7 @@ public class MainMenuService {
             KeyboardRow row3 = new KeyboardRow();
             row1.add(new KeyboardButton("Выполнить поиск аренды?"));
             row2.add(new KeyboardButton("Мои варианты"));
+            row2.add(new KeyboardButton("Скачать предложения"));
             row3.add(new KeyboardButton("Помощь"));
             keyboard.add(row1);
             keyboard.add(row2);

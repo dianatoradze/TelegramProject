@@ -16,7 +16,6 @@ public class ApartEntity {
     private String id;
 
     private int sum;
-    private long chatId;
 
     private String apartType;
 

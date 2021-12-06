@@ -16,7 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 
-public class UserProfileData implements Serializable {
+public class User implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -31,14 +31,14 @@ public class UserProfileData implements Serializable {
     private String dateFinish;
 
     private long chatId;
-    @OneToMany(cascade = CascadeType.ALL)
+
     private List<ApartEntity> apartEntityList = new ArrayList<>();
 
     @Override
     public String toString() {
         return
                "Ваша планка стоимости аренды - " + sum
-//                "тип квартиры - " + getApartType();
+
               + ", " +  " Дата начала аренды - " + dateBegin + ", " +
                 "Дата окончания - " + dateFinish;
     }

@@ -1,6 +1,6 @@
 package org.example.TelegramProject.service;
 
-import org.example.TelegramProject.model.UserProfileData;
+import org.example.TelegramProject.model.User;
 import org.example.TelegramProject.repository.UserProfileDataRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,11 +21,11 @@ private UserProfileDataRepository profileDataRepository;
         this.profileDataRepository = profileDataRepository;
     }
 
-    public Iterable<UserProfileData> getAllProfiles() {
+    public Iterable<User> getAllProfiles() {
         return  profileDataRepository.findAll();
     }
     @Transactional
-    public void saveUserProfileData(UserProfileData userProfileData) {
+    public void saveUserProfileData(User userProfileData) {
 
         profileDataRepository.save(userProfileData);
     }
@@ -33,15 +33,15 @@ private UserProfileDataRepository profileDataRepository;
     public void deleteUsersProfileData(Integer profileDataId) {
         profileDataRepository.deleteById(profileDataId);
     }
-    public boolean hasSubscription(UserProfileData userSubscription) {
-        return profileDataRepository.findByChatIdAndSumAndAndApartType(userSubscription.getChatId(),
-                Integer.valueOf(userSubscription.getSum()), userSubscription.getApartType()).size() > 0;
+    public boolean hasSubscription(User userSubscription) {
+        return profileDataRepository.findByChatIdAndSumAndApartType(userSubscription.getChatId(),
+                userSubscription.getSum(), userSubscription.getApartType()).size() > 0;
     }
 
-    public Optional<UserProfileData> getUsersSubscriptionById(String subscriptionID) {
+    public Optional<User> getUsersSubscriptionById(String subscriptionID) {
         return profileDataRepository.findById(Integer.valueOf(subscriptionID));
     }
-    public List<UserProfileData> getUserProfileData(long chatId) {
+    public List<User> getUserProfileData(long chatId) {
 
         return profileDataRepository.findByChatId(chatId);
     }
