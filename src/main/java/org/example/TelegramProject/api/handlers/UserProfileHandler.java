@@ -18,7 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-// Кэш в памяти usersBotStates: user_id и состояние бота пользователя
+// Кэш в памяти usersBotStates: userid и состояние бота пользователя
 // usersProfileData: user_id и данные профиля пользователя
 @Slf4j
 @Component
@@ -33,11 +33,12 @@ public class UserProfileHandler implements InputMessageHandler {
         this.userDataCache = userDataCache;
         this.messagesService = messagesService;
         this.profileDataService = profileDataService;
+
     }
 
     @Override
     public SendMessage handle(Message message) {
-        if (userDataCache.getUsersCurrentBotState(message.getFrom().getId()).equals(BotState.FILLING_PROFILE)) {
+        if (userDataCache.getUsersCurrentBotState(message.getFrom().getId()).equals(BotState.USER_PROFILE)) {
             userDataCache.setUsersCurrentBotState(message.getFrom().getId(), BotState.ASK_SUM);//проверить
         }
         return processUsersInput(message);
@@ -45,13 +46,13 @@ public class UserProfileHandler implements InputMessageHandler {
 
     @Override
     public BotState getHandlerName() {
-        return BotState.FILLING_PROFILE;
+        return BotState.USER_PROFILE;
     }
 
     @SneakyThrows
     private SendMessage processUsersInput(Message inputMsg) {
         String usersAnswer = String.valueOf(inputMsg.getText());
-        Long userId = inputMsg.getFrom().getId();
+        Long userId = inputMsg.getFrom().getId();                                                                                                                           userId = inputMsg.getFrom().getId();
         long chatId = inputMsg.getChatId();
 
         UserProfileData profileData = userDataCache.getUserProfileData(userId);
@@ -71,28 +72,30 @@ public class UserProfileHandler implements InputMessageHandler {
         }
 
         if (botState.equals(BotState.ASK_DATE_BEGIN)) {
-            profileData.setApartType(String.valueOf(usersAnswer));
             replyToUser = messagesService.getReplyMessage(String.valueOf(chatId), "reply.askDataBegin");
-
+            profileData.setApartType(String.valueOf(usersAnswer));
             userDataCache.setUsersCurrentBotState(userId, BotState.ASK_DATE_FINISH);
+
         }
         if (botState.equals(BotState.ASK_DATE_FINISH)) {
 
+            replyToUser = messagesService.getReplyMessage(String.valueOf(chatId), "reply.askDataFinish");
             profileData.setDateBegin(usersAnswer);
 
-            replyToUser = messagesService.getReplyMessage(String.valueOf(chatId), "reply.askDataFinish");
             userDataCache.setUsersCurrentBotState(userId, BotState.PROFILE_FILLED);
         }
         if (botState.equals(BotState.PROFILE_FILLED)) {
             profileData.setDateFinish(usersAnswer);
             profileData.setChatId(chatId);
-            profileDataService.saveUserProfileData(profileData);
-            userDataCache.setUsersCurrentBotState(userId, BotState.SHOW_MAIN_MENU); // следующее состояние
-            //String profileFilledMessage = messagesService.getReplyMessage("reply.profileFilled", String.valueOf(profileData.getChatId()));
-            replyToUser = messagesService.getReplyMessage(String.valueOf(chatId), "reply.profileFilled");
+            //profileDataService.saveUserProfileData(profileData);
+            userDataCache.setUsersCurrentBotState(userId, BotState.APART_SEARCH); // SHOW_MAIN_MENU
+            //String profileFilledMessage = messagesService.getReplyMessage(String.valueOf(chatId),profileData);
+            //replyToUser = messagesService.getReplyMessage(String.valueOf(chatId), "Данные по вашей поиску ", profileData);
+            replyToUser = new SendMessage(String.valueOf(chatId), String.format("%s %s", "Данные по вашей поиску",profileData));
+
         }
 
-        userDataCache.saveUserProfileData(userId, profileData);
+            userDataCache.saveUserProfileData(userId, profileData);
 
         return replyToUser;
     }

@@ -1,8 +1,9 @@
 package org.example.TelegramProject.api.handlers;
 
-import lombok.SneakyThrows;
 import org.example.TelegramProject.api.BotState;
 import org.example.TelegramProject.api.InputMessageHandler;
+import org.example.TelegramProject.cashe.DataCashe;
+import org.example.TelegramProject.cashe.UserDataCache;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -17,11 +18,12 @@ import java.util.List;
 //Спрашивает пользователя - хочет ли он получить предложение о поиске аренды
 @Slf4j
 @Component
-public class AskHandler implements InputMessageHandler {
+public class AskApartHandler implements InputMessageHandler {
 
+    //
     private ReplyMessagesService messagesService;
 
-    public AskHandler(ReplyMessagesService messagesService) {
+    public AskApartHandler(ReplyMessagesService messagesService) {
 
         this.messagesService = messagesService;
     }
@@ -37,11 +39,12 @@ public class AskHandler implements InputMessageHandler {
     }
 
     private SendMessage processUsersInput(Message inputMsg) {
-
+        int userId = Math.toIntExact(inputMsg.getFrom().getId());
         long chatId = inputMsg.getChatId();
 
         SendMessage replyToUser = messagesService.getReplyMessage(String.valueOf(chatId), "reply.askApart");
 
+        //userDataCache.setUsersCurrentBotState(Long.valueOf(userId),BotState.USER_PROFILE);//посмотреть
         replyToUser.setReplyMarkup(getInlineMessageButtons());
 
         return replyToUser;

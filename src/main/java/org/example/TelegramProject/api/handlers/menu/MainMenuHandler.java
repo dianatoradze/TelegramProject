@@ -20,7 +20,7 @@ public class MainMenuHandler implements InputMessageHandler {
 
         @Override
         public SendMessage handle(Message message) {
-            return mainMenuService.getMainMenuMessage(message.getChatId(), messagesService.getReplyText("reply.showMainMenu"));
+            return mainMenuService.getMainMenuMessage(String.valueOf(message.getChatId()), messagesService.getReplyText("reply.showMainMenu"));
         }
 
         @Override

@@ -11,6 +11,7 @@ public class ReplyMessagesService {
     private final LocaleMessageService localeMessageService;
 
     public ReplyMessagesService(LocaleMessageService messageService) {
+
         this.localeMessageService = messageService;
     }
     // произошел сбой, изначально, как и далее chatId должно быть long, не String

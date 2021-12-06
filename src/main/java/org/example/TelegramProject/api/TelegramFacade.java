@@ -9,20 +9,12 @@ import org.example.TelegramProject.service.MainMenuService;
 import org.example.TelegramProject.service.ReplyMessagesService;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
-import org.springframework.util.ResourceUtils;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
-import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
-
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 
 @Component
 @Slf4j //для тестирования
@@ -66,8 +58,8 @@ public class TelegramFacade {
     @SneakyThrows
     private SendMessage handleInputMessage(Message message) {
         String inputMsg = message.getText();
-        long chatId = message.getChatId();
-        long userId = message.getFrom().getId();
+
+        Long userId = message.getFrom().getId();
         BotState botState;
         SendMessage replyMessage = null;
 
@@ -76,10 +68,10 @@ public class TelegramFacade {
                 botState = BotState.APART_SEARCH;
                 break;
             case "Выполнить поиск аренды?":
-                botState = BotState.FILLING_PROFILE; // проверить состояние
+                botState = BotState.USER_PROFILE; // проверить состояние
                 break;
             case "Мои варианты":
-                myBot.getInfo(inputMsg);
+                myBot.getInfo();
                 botState = BotState.SHOW_USER_PROFILE;
                 break;
             case "Помощь":
@@ -100,33 +92,33 @@ public class TelegramFacade {
 
     private BotApiMethod<?> processCallbackQuery(CallbackQuery buttonQuery) {
         final String chatId = String.valueOf(buttonQuery.getMessage().getChatId());
-        final String userId = String.valueOf(buttonQuery.getFrom().getId());
-        BotApiMethod<?> callBackAnswer = mainMenuService.getMainMenuMessage(Long.parseLong(chatId), "Воспользуйтесь главным меню");
+        final Long userId = buttonQuery.getFrom().getId();
+        BotApiMethod<?> callBackAnswer = mainMenuService.getMainMenuMessage(chatId, "Воспользуйтесь главным меню");
 
         //выбор кнопок
         if (buttonQuery.getData().equals("buttonYes")) {
-            callBackAnswer = new SendMessage(chatId, "Введи минимальную сумму аренды");
-            userDataCache.setUsersCurrentBotState(Long.valueOf(userId), BotState.ASK_TYPE_APART);
+            callBackAnswer = new SendMessage(chatId, "Введи максимальную сумму аренды");
+            userDataCache.setUsersCurrentBotState(userId, BotState.ASK_TYPE_APART);
         } else if (buttonQuery.getData().equals("buttonNo")) {
             callBackAnswer = sendAnswerCallbackQuery("Возвращайся позже", true, buttonQuery);
         }       //проверить параметр false/true
 
         //Выбор типа квартиры
         else if (buttonQuery.getData().equals("buttonTypeOne")) {
-            UserProfileData userProfileData = userDataCache.getUserProfileData(Long.valueOf(userId));
+            UserProfileData userProfileData = userDataCache.getUserProfileData(userId);
             userProfileData.setApartType("Однокомнатная");
-            userDataCache.saveUserProfileData(Long.valueOf(userId), userProfileData);
-            userDataCache.setUsersCurrentBotState(Long.valueOf(userId), BotState.ASK_DATE_BEGIN);
-            callBackAnswer = new SendMessage(chatId, "Рассматриваете вариант с комиссией?");
+            userDataCache.saveUserProfileData(userId, userProfileData);
+            userDataCache.setUsersCurrentBotState(userId, BotState.ASK_DATE_BEGIN);
+            //callBackAnswer = new SendMessage(chatId, "Рассматриваете вариант с комиссией?");
         } else if (buttonQuery.getData().equals("buttonTypeTwo")) {
-            UserProfileData userProfileData = userDataCache.getUserProfileData(Long.valueOf(userId));
+            UserProfileData userProfileData = userDataCache.getUserProfileData(userId);
             userProfileData.setApartType("Двухкомнатная");
-            userDataCache.saveUserProfileData(Long.valueOf(userId), userProfileData);
-            userDataCache.setUsersCurrentBotState(Long.valueOf(userId), BotState.ASK_DATE_BEGIN);
-            callBackAnswer = new SendMessage(chatId, "Рассматриваете вариант с комиссией?");
+            userDataCache.saveUserProfileData(userId, userProfileData);
+            userDataCache.setUsersCurrentBotState(userId, BotState.ASK_DATE_BEGIN);
+            //callBackAnswer = new SendMessage(chatId, "Рассматриваете вариант с комиссией?");
 
         } else {
-            userDataCache.setUsersCurrentBotState(Long.valueOf(userId), BotState.SHOW_MAIN_MENU);
+            userDataCache.setUsersCurrentBotState(userId, BotState.SHOW_MAIN_MENU);
         }
 
         return callBackAnswer;

@@ -4,5 +4,15 @@
       "name": "telegrambot.userName",
       "type": "java.lang.String",
       "description": "Description for telegrambot.userName."
-  }
-] }
+    },
+    {
+      "name": "spring.datasource.validationQuery",
+      "type": "java.lang.String",
+      "description": "Description for spring.datasource.validationQuery."
+    },
+    {
+      "name": "telegrambot.webHookPatch",
+      "type": "java.lang.String",
+      "description": "Description for telegrambot.webHookPatch."
+    }
+  ] }

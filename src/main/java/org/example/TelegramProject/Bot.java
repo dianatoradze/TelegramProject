@@ -14,10 +14,12 @@ import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import javax.imageio.ImageIO;
 import javax.imageio.stream.ImageOutputStream;
 import java.awt.image.BufferedImage;
 import java.net.URL;
+
+import static javax.imageio.ImageIO.read;
+import static javax.imageio.ImageIO.write;
 
 @Getter
 @Setter
@@ -43,23 +45,14 @@ public class Bot extends TelegramLongPollingBot {
 
     @SneakyThrows
     public void onUpdateReceived(Update update) {
-        final BotApiMethod<?> replyMessageToUser = telegramFacade.handleUpdate(update);
-        if (update.hasMessage()) {
+        BotApiMethod<?> replyMessageToUser = telegramFacade.handleUpdate(update);
+        if (update.hasMessage() || update.hasCallbackQuery()) {
             log.info("TelegramBot onUpdateReceived {}", update);
-
             sendMessage(replyMessageToUser);
-
         }
         // обработка отклика с клавиатуры
-        if (update.hasCallbackQuery()) {
-            try {
-                execute(replyMessageToUser);
-            } catch (TelegramApiException e) {
-                e.printStackTrace();
-            }
-
-        }
     }
+
 
     private void sendMessage(BotApiMethod<?> message) {
         try {
@@ -71,37 +64,49 @@ public class Bot extends TelegramLongPollingBot {
 
 
     @SneakyThrows
-    public String getInfo(String message)  {
-//
-//        URL url = new URL(apart.getImage());
-//        BufferedImage img = ImageIO.read(url);
-//        // качаем изображение в буфер
-//        InputFile outputfile = new InputFile("image.jpg");
-//        //создаем новый файл в который поместим  изображение
-//        ImageIO.write(img, "jpg", (ImageOutputStream) outputfile);
-//
-//        //преобразовуем  буферное изображение в новый файл
-//
-//        sendPhoto(chatId, outputfile);
+    public String getInfo() throws Exception{
+        try {
+            URL url = new URL(apart.getImage());
+            BufferedImage img = read(url);
+            // качаем изображение в буфер
+            InputFile outputfile = new InputFile("image.jpg");
+            //создаем новый файл в который поместим  изображение
+            write(img, "jpg", (ImageOutputStream) outputfile);
 
-        String info = apart.getTitle()
-                + "\nАдрес" + apart.getAdress()
-                + "\nКоличество комнат" + apart.getApartType()
-                + "\n\nОписание\n" + apart.getDescription()
-                + "\n\nОписание\n" + apart.getSum()
-                + "\n\nВремя размещения объявления " + apart.getDate();
+            //преобразовуем  буферное изображение в новый файл
+
+            SendPhoto sendPhoto = new SendPhoto();
+            sendPhoto.setChatId(String.valueOf(chatId));
+            sendPhoto.setPhoto(outputfile);
+            execute(sendPhoto);
+        } catch (Exception e) {
+            System.out.println("File not found");
+            e.printStackTrace();
+        }
+
+        String info =
+
+        //    "\nРазмещение квартир" + apart.getApartType()
+                     apart.getImage();
+          //   + "\nАдреса " + apart.getAdress() + "\n";
+
+//        "\n\nОписание\n" + apart.getDescription();
+//               + "\n\Стоимость аренды\n" + apart.getSum();
+
+//                        + "\n\nВремя размещения объявления " + apart.getDate();
+
 
         return info;
     }
-
-    @SneakyThrows
-    public void sendPhoto(long chatId, InputFile imageCaption) {
-
-        SendPhoto sendPhoto = new SendPhoto();
-        sendPhoto.setChatId(String.valueOf(chatId));
-        sendPhoto.setCaption(String.valueOf(imageCaption));
-        execute(sendPhoto);
-    }
+//
+//    @SneakyThrows
+//    public void sendPhoto(long chatId, InputFile imageCaption) {
+//
+//        SendPhoto sendPhoto = new SendPhoto();
+//        sendPhoto.setChatId(String.valueOf(chatId));
+//        sendPhoto.setCaption(String.valueOf(imageCaption));
+//        execute(sendPhoto);
+//    }
 
 }
 

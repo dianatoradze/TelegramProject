@@ -4,6 +4,8 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.meta.api.objects.InputFile;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,31 +23,33 @@ public class Apart {
     //подключаемся к странице
     private void connect() {
         try {
-            document = Jsoup.connect("https://www.avito.ru/ekaterinburg/kvartiry/sdam-ASgBAgICAUSSA8gQ").get();
+            document = Jsoup.connect("https://www.avito.ru/ekaterinburg/kvartiry/sdam/na_dlitelnyy_srok-ASgBAgICAkSSA8gQ8AeQUg?cd=1&f=ASgBAQICAkSSA8gQ8AeQUgFAzAgkkFmOWQ&user=1").maxBodySize(0).get();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     //получаем название объявления
-    public String getTitle() {
+    public String getLink() {
         return document.title();
     }
 
     //читаем описание
     public String getDescription() {
-        Elements element = document.getElementsByClass("links-row-Gormg");
-        return element.text();
-    }
-
-    //тип квартиры
-    public String getApartType() {
-        Elements element = document.getElementsByAttributeValue("href", "title");
+        Elements element = document.getElementsByClass("iva-item-descriptionStep-QGE8Y");
         String type = String.valueOf(element.val("title"));
         type = type.replace(",", "");
         //чистим  от лишнего
 
         return type;
+    }
+
+    //тип квартиры
+    public String getApartType() {
+
+        Elements elements = document.getElementsByClass("iva-item-descriptionStep-QGE8Y");
+        return elements.text();
+
     }
 
     //последние объявления по дате
@@ -59,21 +63,27 @@ public class Apart {
 
     //берем изображение из объявления
     public String getImage() {
-        //iva-item-slider-GWoCM
-        Elements elements = document.getElementsByClass("photo-slider-item-o_UGQ photo-slider-keepImageRatio-NrG6s");
-        String url = elements.attr("style");
-        //чистим url от лишнего
 
-        url = url.replace("');", "");
+        //Elements elements = document.getElementsByClass("iva-item-sliderLink-bJ9Pv");
+        Elements media = document.select("[src]");
+        print("\nMedia: (%d)", media.size());
+        for (Element src : media) {
+            if (src.normalName().equals("img"))
+                print(" * %s: <%s> %sx%s (%s)",
+                        src.tagName(), src.attr("abs:src"), src.attr("width"), src.attr("height"),
+                        trim(src.attr("alt"), 20));
+            else
+                print(" * %s: <%s>", src.tagName(), src.attr("abs:src"));
+        }
+        print("\nMedia: (%d)", media.size());
 
-        //чистим url от лишнего
 
-        return url;
+        return media.text();
     }
 
     //адрес квартиры
     public String getAdress() {
-        Elements elements = document.getElementsByClass("iva-item-developmentNameStep-n46gZ");
+        Elements elements = document.getElementsByClass("iva-item-titleStep-_CxvN");
         return elements.text();
     }
 
@@ -81,5 +91,14 @@ public class Apart {
         Elements elements = document.getElementsByClass("iva-item-priceStep-QN8Kl");
         return elements.text();
     }
+    private static String trim(String s, int width) {
+        if (s.length() > width)
+            return s.substring(0, width-1) + ".";
+        else
+            return s;
+    }
 
+    private static void print(String msg, Object... args) {
+        System.out.println(String.format(msg, args));
+    }
 }

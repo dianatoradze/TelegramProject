@@ -11,7 +11,7 @@ import java.util.Map;
 public class UserDataCache implements DataCashe {
 
     private Map<Long, BotState> usersBotStates = new HashMap<@lombok.NonNull Long, BotState>();
-    private Map<Long, UserProfileData> usersProfileData = new HashMap<@lombok.NonNull Long, UserProfileData>();
+    private Map<Long, UserProfileData> usersProfileData = new HashMap<Long, UserProfileData>();
 
     @Override
     public void setUsersCurrentBotState(Long userId, BotState botState) {
@@ -29,7 +29,7 @@ public class UserDataCache implements DataCashe {
     }
 
     @Override
-    public UserProfileData getUserProfileData( Long userId) {
+    public UserProfileData getUserProfileData(Long userId) {
         UserProfileData userProfileData = usersProfileData.get(userId);
         if (userProfileData == null) {
             userProfileData = new UserProfileData();//изменить

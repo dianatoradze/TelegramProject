@@ -20,7 +20,7 @@ public class HelpMenuHandler implements InputMessageHandler {
 
     @Override
     public SendMessage handle(Message message) {
-        return mainMenuService.getMainMenuMessage(message.getChatId(),
+        return mainMenuService.getMainMenuMessage(String.valueOf(message.getChatId()),
                 messagesService.getReplyText("reply.showHelpMenu"));
     }
 

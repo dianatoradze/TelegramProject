@@ -13,7 +13,7 @@ public enum BotState {
 
     ASK_TYPE_APART,
 
-    FILLING_PROFILE,
+    USER_PROFILE,
     PROFILE_FILLED,
     SHOW_MAIN_MENU,
     SHOW_HELP_MENU;

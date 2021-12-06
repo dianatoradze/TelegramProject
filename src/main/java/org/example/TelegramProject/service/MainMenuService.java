@@ -1,12 +1,10 @@
 package org.example.TelegramProject.service;
 
-import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +12,7 @@ import java.util.List;
 public class MainMenuService {
     //Управляет отображением главного меню в чате и кнопки
 
-         public SendMessage getMainMenuMessage(final long chatId, final String textMessage) {
+         public SendMessage getMainMenuMessage(final String chatId, final String textMessage) {
             final ReplyKeyboardMarkup replyKeyboardMarkup = getMainMenuKeyboard();
             final SendMessage mainMenuMessage =
                     createMessageWithKeyboard(String.valueOf(chatId), textMessage, replyKeyboardMarkup);
